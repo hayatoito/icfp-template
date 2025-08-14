@@ -105,7 +105,7 @@ plot_sa() {
 render_problems() {
   build
   for i in {1..$max_problem_id}; do
-    $bin plot-problem $i ./render/problem/$i.svg
+    $bin render-problem $i ./render/problem/$i.svg
   done
 }
 

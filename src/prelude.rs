@@ -4,7 +4,6 @@ pub use lazy_static::lazy_static;
 pub use log::*;
 pub use ordered_float::OrderedFloat;
 
-/*
 pub use rand::rngs::StdRng;
 pub use rand::Rng;
 pub use rand::SeedableRng;
@@ -50,7 +49,7 @@ pub const BLOCK_RADIUS_2: Coord = BLOCK_RADIUS * BLOCK_RADIUS;
 pub const EPS: Coord = 1.0e-10;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, derive_more::Display)]
-#[display(fmt = "({}, {})", x, y)]
+#[display("({}, {})", x, y)]
 pub struct Point {
     pub x: Coord,
     pub y: Coord,
@@ -190,4 +189,3 @@ mod tests {
         ));
     }
 }
-*/

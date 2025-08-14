@@ -111,12 +111,12 @@ impl Problem {
             if minx == maxx {
                 minx
             } else {
-                rng.gen_range(minx..maxx)
+                rng.random_range(minx..maxx)
             },
             if miny == maxy {
                 miny
             } else {
-                rng.gen_range(miny..maxy)
+                rng.random_range(miny..maxy)
             },
         )
     }

@@ -366,9 +366,9 @@ impl<'a> LocalState<'a> {
 
 #[derive(Copy, Clone, derive_more::Display)]
 pub enum End {
-    #[display(fmt = "iter-{}", "_0.to_string()")]
+    #[display("iter-{}", "_0.to_string()")]
     MaxIteration(usize),
-    #[display(fmt = "duration-{}", "_0.as_secs()")]
+    #[display("duration-{}", "_0.as_secs()")]
     MaxDuration(std::time::Duration),
 }
 
@@ -456,9 +456,9 @@ pub fn run_sa(
         }
 
         // Swap
-        if rng.gen_range(0..10) == 0 {
-            let a = rng.gen_range(0..nm);
-            let b = rng.gen_range(0..nm);
+        if rng.random_range(0..10) == 0 {
+            let a = rng.random_range(0..nm);
+            let b = rng.random_range(0..nm);
             if a == b {
                 continue;
             }
@@ -468,7 +468,7 @@ pub fn run_sa(
             // let delta = sc2 - sc;
 
             ntotal += 1;
-            if sc2 >= sc || ((sc2 - sc) / temp).exp() > rng.gen_range(0.0..1.0) {
+            if sc2 >= sc || ((sc2 - sc) / temp).exp() > rng.random_range(0.0..1.0) {
                 if sc2 >= sc {
                     naccept_positive += 1;
                 } else {
@@ -486,7 +486,7 @@ pub fn run_sa(
         }
 
         // Move
-        let id = rng.gen_range(0..nm);
+        let id = rng.random_range(0..nm);
         let p0 = st.place[id];
 
         let collides = |p: Point| -> bool {
@@ -495,11 +495,11 @@ pub fn run_sa(
                     .any(|j| id != j && p.distance_squared(st.place[j]) < MUSICIAN_RADIUS_2 + EPS)
         };
 
-        let p = match rng.gen_range(0..10) {
+        let p = match rng.random_range(0..10) {
             0 => problem.random_point_on_stage(rng),
             1 => {
-                let dist = 40.0 * rng.gen_range(0.0f64..1.0).powi(2);
-                let angle = rng.gen_range(0.0f64..2.0 * std::f64::consts::PI);
+                let dist = 40.0 * rng.random_range(0.0f64..1.0).powi(2);
+                let angle = rng.random_range(0.0f64..2.0 * std::f64::consts::PI);
 
                 let dx = angle.cos();
                 let dy = angle.sin();
@@ -522,8 +522,8 @@ pub fn run_sa(
             //   // TODO: Gradient
             // };
             _ => {
-                let dist = 40.0 * rng.gen_range(0.0f64..1.0).powi(2);
-                let angle = rng.gen_range(0.0f64..2.0 * std::f64::consts::PI);
+                let dist = 40.0 * rng.random_range(0.0f64..1.0).powi(2);
+                let angle = rng.random_range(0.0f64..2.0 * std::f64::consts::PI);
                 Point::new(p0.x + dist * angle.cos(), p0.y + dist * angle.sin())
             }
         };
@@ -538,7 +538,7 @@ pub fn run_sa(
         let sc2 = st.score;
         ntotal += 1;
 
-        if sc2 >= sc || ((sc2 - sc) / temp).exp() > rng.gen_range(0.0..1.0) {
+        if sc2 >= sc || ((sc2 - sc) / temp).exp() > rng.random_range(0.0..1.0) {
             if sc2 >= sc {
                 naccept_positive += 1;
             } else {

@@ -1,5 +1,7 @@
 /target
 /plot
 /log/
+/render
 /solution/all/
 /solution/best-sa/
+/solution/sa-*

@@ -381,6 +381,7 @@ pub fn run_sa(
     solution: &Solution,
     temp0: Option<f64>,
     end: End,
+    sender: Option<async_channel::Sender<Solution>>,
 ) -> Result<(Score, Solution)> {
     let nm = problem.musicians.len();
 
@@ -416,6 +417,12 @@ pub fn run_sa(
 
     loop {
         niter += 1;
+
+        if niter % 10 == 0 {
+            if let Some(sender) = &sender {
+                sender.send_blocking(st.to_solution())?;
+            }
+        }
 
         if niter % 1_000 == 0 {
             let done = match end {
@@ -561,6 +568,7 @@ pub struct SolverSa {
     temp0: Option<f64>,
     end: End,
     initial_solution: Solution,
+    sender: Option<async_channel::Sender<Solution>>,
 }
 
 impl SolverSa {
@@ -588,6 +596,7 @@ impl SolverSa {
         temp0: Option<f64>,
         end: End,
         initial_solution: Option<Solution>,
+        sender: Option<async_channel::Sender<Solution>>,
     ) -> Result<Self> {
         let problem = Problem::new(problem_id)?;
         let initial_solution = initial_solution.unwrap_or(Self::initial_solution(&problem));
@@ -597,6 +606,7 @@ impl SolverSa {
             temp0,
             end,
             initial_solution,
+            sender,
         })
     }
 }
@@ -622,6 +632,7 @@ impl Solver for SolverSa {
             &self.initial_solution,
             self.temp0,
             self.end,
+            self.sender.clone(),
         )?;
         let Solution {
             placements,
@@ -646,7 +657,7 @@ mod tests {
     fn solver_sa() -> Result<()> {
         let cases = [(60, 34597619.50674734)];
         for (id, score) in cases {
-            let mut solver = SolverSa::new(id, Some(100.0), End::MaxIteration(10_000), None)?;
+            let mut solver = SolverSa::new(id, Some(100.0), End::MaxIteration(10_000), None, None)?;
             let solved = solver.solve()?;
             assert_eq!(solved.score, score);
         }

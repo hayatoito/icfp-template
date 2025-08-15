@@ -24,7 +24,8 @@ fd-lock = "4.0.4"
 lazy_static = "1.5.0"
 byte-strings = "0.3.1"
 cairo-rs = { version = "0.21.1", features = ["pdf", "svg"] }
-
+gtk = { version = "0.10.0", package = "gtk4", features = ["v4_18"] }
+async-channel = "2.5.0"
 
 # [profile.release]
 # debug = 1

@@ -1,3 +1,4 @@
+pub mod gui;
 pub mod prelude;
 pub mod problem;
 pub mod render;

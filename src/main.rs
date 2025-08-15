@@ -1,5 +1,6 @@
 use clap::Parser;
 
+use icfp2024::gui;
 use icfp2024::prelude::*;
 use icfp2024::problem::*;
 use icfp2024::render;
@@ -23,6 +24,8 @@ enum Cli {
         id: ProblemId,
         #[arg(long)]
         initial_solution_path: Option<PathBuf>,
+        #[arg(long)]
+        gui: bool,
     },
     // Bench {
     //     id: ProblemId,
@@ -50,17 +53,43 @@ fn main() -> Result<()> {
         Cli::Solve {
             id,
             initial_solution_path,
+            gui,
         } => {
-            solver::solve(solver_sa::SolverSa::new(
-                id,
-                // 5_000_000.0,
-                Some(100.0),
-                // 3 hours.
-                // solver_sa::End::MaxDuration(std::time::Duration::from_secs(12 * 3_600)),
-                solver_sa::End::MaxDuration(std::time::Duration::from_secs(60)),
-                // solver_sa::End::MaxDuration(std::time::Duration::from_secs(3600)),
-                initial_solution_path.and_then(|path| solution::Solution::from(path).ok()),
-            )?)?;
+            println!("{id}, gui: {gui}");
+            if gui {
+                let (sender, receiver) = async_channel::bounded(1);
+                std::thread::spawn(move || {
+                    solver::solve(
+                        solver_sa::SolverSa::new(
+                            id,
+                            // 5_000_000.0,
+                            Some(100.0),
+                            // 3 hours.
+                            // solver_sa::End::MaxDuration(std::time::Duration::from_secs(12 * 3_600)),
+                            solver_sa::End::MaxDuration(std::time::Duration::from_secs(60)),
+                            // solver_sa::End::MaxDuration(std::time::Duration::from_secs(3600)),
+                            initial_solution_path
+                                .and_then(|path| solution::Solution::from(path).ok()),
+                            Some(sender),
+                        )
+                        .expect("new?"),
+                    )
+                    .expect("solve?");
+                });
+                gui::run(id, receiver);
+            } else {
+                solver::solve(solver_sa::SolverSa::new(
+                    id,
+                    // 5_000_000.0,
+                    Some(100.0),
+                    // 3 hours.
+                    // solver_sa::End::MaxDuration(std::time::Duration::from_secs(12 * 3_600)),
+                    solver_sa::End::MaxDuration(std::time::Duration::from_secs(60)),
+                    // solver_sa::End::MaxDuration(std::time::Duration::from_secs(3600)),
+                    initial_solution_path.and_then(|path| solution::Solution::from(path).ok()),
+                    None,
+                )?)?;
+            };
         }
         // Cli::Bench { id } => {
         //     solver::solve(solver_sa::SolverSa::new(

@@ -1,6 +1,7 @@
+use crate::draw;
 use crate::prelude::*;
-use crate::render;
 
+use crate::db::*;
 use crate::problem::*;
 use crate::solution::*;
 
@@ -37,8 +38,7 @@ impl Solved {
     }
 
     pub fn save_best_if(&self) -> Result<()> {
-        let best_score = BestScore::new()?;
-        let is_best = match best_score.score(self.problem_id) {
+        let is_best = match score(self.problem_id)? {
             Some(best) => {
                 if best < self.score {
                     println!(
@@ -64,7 +64,7 @@ impl Solved {
         };
         if is_best {
             self.save_solution_to(&format!("solution/best/{}.json", self.problem_id))?;
-            BestScore::update(self.problem_id, self.score)?;
+            update_score(self.problem_id, self.score)?;
         }
         Ok(())
     }
@@ -76,11 +76,11 @@ impl Solved {
         }
     }
 
-    pub fn render(&self) -> Result<()> {
-        render::render_solution(
+    pub fn draw(&self) -> Result<()> {
+        draw::draw_solution(
             self.problem_id,
             &self.solution(),
-            project_path(format!("render/all/{}-{}.svg", self.problem_id, self.score)),
+            project_path(format!("draw/all/{}-{}.svg", self.problem_id, self.score)),
         )
     }
 }
@@ -91,7 +91,7 @@ pub fn solve<T: Solver>(mut solver: T) -> Result<()> {
     println!("Solved {}. score: {}", solver.problem_id(), solved.score);
     solved.save_solution()?;
     solved.save_best_if()?;
-    solved.render()?;
+    solved.draw()?;
     Ok(())
 }
 

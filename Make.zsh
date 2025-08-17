@@ -30,7 +30,7 @@ init_from_last_year_repo() {
 }
 
 init_dirs() {
-  mkdir -p {problem,solution,plot,render}
+  mkdir -p {problem,solution,plot,draw}
   mkdir -p solution/submission
 }
 
@@ -100,21 +100,21 @@ plot_sa() {
   gnuplot -p -e "arg_data='$1'" ./plot/sa.gnuplot
 }
 
-# * Render
+# * Draw
 
-render_problems() {
+draw_problems() {
   build
   for i in {1..$max_problem_id}; do
-    $bin render-problem $i ./render/problem/$i.svg
+    $bin draw-problem $i ./draw/problem/$i.svg
   done
 }
 
-render_solutions() {
+draw_solutions() {
   build
   local d=${1:-./solution/best}
-  mkdir -p ./render/${d:t}
+  mkdir -p ./draw/${d:t}
   for i in {1..$max_problem_id}; do
-    $bin render-solution $i $d/$i.json ./render/${d:t}/$i.svg
+    $bin draw-solution $i $d/$i.json ./draw/${d:t}/$i.svg
   done
 }
 
@@ -229,11 +229,11 @@ userboard() {
 # * Watch progress
 
 watch() {
-  watchman-make -p 'render/wip.svg' --run "my-browser reload wip.svg"
+  watchman-make -p 'draw/wip.svg' --run "my-browser reload wip.svg"
 }
 
 watch_100() {
-  watchman-make -p 'render/wip.svg' --run "my-browser --port 10028 reload wip.svg"
+  watchman-make -p 'draw/wip.svg' --run "my-browser --port 10028 reload wip.svg"
 }
 
 browser() {
@@ -241,7 +241,7 @@ browser() {
 }
 
 movie() {
-  cd ./render/wip
+  cd ./draw/wip
   ffmpeg -y -framerate 2 -pattern_type glob -i '*.svg' -codec:v vp9 -lossless 1 out.webm
 }
 

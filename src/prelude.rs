@@ -1,6 +1,5 @@
 pub use anyhow::{bail, ensure, Context, Result};
 pub use approx::*;
-pub use lazy_static::lazy_static;
 pub use log::*;
 pub use ordered_float::OrderedFloat;
 
@@ -15,8 +14,6 @@ pub use std::ops::Index;
 pub use std::ops::IndexMut;
 pub use std::ops::Range;
 pub use std::path::{Path, PathBuf};
-
-pub use indicatif::ProgressBar;
 
 pub fn project_path(relative_path: impl AsRef<Path>) -> PathBuf {
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));

@@ -1,9 +1,9 @@
 use clap::Parser;
 
+use icfp2024::draw;
 use icfp2024::gui;
 use icfp2024::prelude::*;
 use icfp2024::problem::*;
-use icfp2024::render;
 use icfp2024::solution;
 use icfp2024::solver;
 use icfp2024::solver_sa;
@@ -11,11 +11,11 @@ use icfp2024::solver_sa;
 #[derive(Parser, Debug)]
 #[clap(name = "icfp2024")]
 enum Cli {
-    RenderProblem {
+    DrawProblem {
         id: ProblemId,
         out_path: PathBuf,
     },
-    RenderSolution {
+    DrawSolution {
         id: ProblemId,
         solution_path: PathBuf,
         out_path: PathBuf,
@@ -40,15 +40,15 @@ enum Cli {
 fn main() -> Result<()> {
     env_logger::init();
     match Cli::parse() {
-        Cli::RenderProblem { id, out_path } => {
-            render::render_problem(id, out_path)?;
+        Cli::DrawProblem { id, out_path } => {
+            draw::draw_problem(id, out_path)?;
         }
-        Cli::RenderSolution {
+        Cli::DrawSolution {
             id,
             solution_path,
             out_path,
         } => {
-            render::render_solution_file(id, solution_path, out_path)?;
+            draw::draw_solution_file(id, solution_path, out_path)?;
         }
         Cli::Solve {
             id,

@@ -34,8 +34,6 @@ impl Solution {
     }
 }
 
-use fd_lock::RwLock;
-
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Userboard {
     #[serde(rename = "Success")]
@@ -80,78 +78,80 @@ impl Userboard {
 
 // After contests
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct BestScore(HashMap<ProblemId, Score>);
+// use fd_lock::RwLock;
 
-impl BestScore {
-    pub fn new() -> Result<Self> {
-        let f = RwLock::new(
-            std::fs::File::open(project_path("solution/best-score.json"))
-                .context("best score new")?,
-        );
-        let f = f.read()?;
-        Ok(Self(serde_json::from_reader(f.deref())?))
-    }
+// #[derive(Serialize, Deserialize, Debug)]
+// pub struct BestScore(HashMap<ProblemId, Score>);
 
-    pub fn score(&self, id: ProblemId) -> Option<Score> {
-        self.0.get(&id).cloned()
-    }
+// impl BestScore {
+//     pub fn new() -> Result<Self> {
+//         let f = RwLock::new(
+//             std::fs::File::open(project_path("solution/best-score.json"))
+//                 .context("best score new")?,
+//         );
+//         let f = f.read()?;
+//         Ok(Self(serde_json::from_reader(f.deref())?))
+//     }
 
-    pub fn total_score(&self) -> Score {
-        self.0.values().sum()
-    }
+//     pub fn score(&self, id: ProblemId) -> Option<Score> {
+//         self.0.get(&id).cloned()
+//     }
 
-    pub fn update(id: ProblemId, new_score: Score) -> Result<()> {
-        use std::io::{Seek as _, SeekFrom};
+//     pub fn total_score(&self) -> Score {
+//         self.0.values().sum()
+//     }
 
-        // This op should be atomic.
+//     pub fn update(id: ProblemId, new_score: Score) -> Result<()> {
+//         use std::io::{Seek as _, SeekFrom};
 
-        let path = project_path("solution/best-score.json");
-        let f = std::fs::OpenOptions::new()
-            .read(true)
-            .write(true)
-            .create(true)
-            .open(path)
-            .context("best score update")?;
-        let mut f = RwLock::new(f);
-        let mut f = f.write()?;
+//         // This op should be atomic.
 
-        let mut map: HashMap<ProblemId, Score> =
-            serde_json::from_reader(f.deref()).context("best score update 2")?;
-        map.insert(id, new_score);
+//         let path = project_path("solution/best-score.json");
+//         let f = std::fs::OpenOptions::new()
+//             .read(true)
+//             .write(true)
+//             .create(true)
+//             .open(path)
+//             .context("best score update")?;
+//         let mut f = RwLock::new(f);
+//         let mut f = f.write()?;
 
-        // Truncate
-        f.set_len(0)?;
-        f.seek(SeekFrom::Start(0))?;
+//         let mut map: HashMap<ProblemId, Score> =
+//             serde_json::from_reader(f.deref()).context("best score update 2")?;
+//         map.insert(id, new_score);
 
-        let json = serde_json::to_string(&map)?;
-        write!(f, "{}", json)?;
-        Ok(())
-    }
+//         // Truncate
+//         f.set_len(0)?;
+//         f.seek(SeekFrom::Start(0))?;
 
-    pub fn refresh() -> Result<()> {
-        let mut map = HashMap::new();
-        for id in 1..=90 {
-            if let Ok(best_solution) = Solution::best(id) {
-                let problem = Problem::new(id)?;
-                let score = crate::solver_sa::score(&problem, id, id.into(), &best_solution);
-                map.insert(id, score);
-            }
-        }
+//         let json = serde_json::to_string(&map)?;
+//         write!(f, "{}", json)?;
+//         Ok(())
+//     }
 
-        let path = project_path("solution/best-score.json");
-        let f = std::fs::OpenOptions::new()
-            .write(true)
-            .truncate(true)
-            .open(path)
-            .context("best score refresh")?;
-        let mut f = RwLock::new(f);
-        let mut f = f.write()?;
-        let json = serde_json::to_string(&map)?;
-        write!(f, "{}", json)?;
-        Ok(())
-    }
-}
+//     pub fn refresh() -> Result<()> {
+//         let mut map = HashMap::new();
+//         for id in 1..=90 {
+//             if let Ok(best_solution) = Solution::best(id) {
+//                 let problem = Problem::new(id)?;
+//                 let score = crate::solver_sa::score(&problem, id, id.into(), &best_solution);
+//                 map.insert(id, score);
+//             }
+//         }
+
+//         let path = project_path("solution/best-score.json");
+//         let f = std::fs::OpenOptions::new()
+//             .write(true)
+//             .truncate(true)
+//             .open(path)
+//             .context("best score refresh")?;
+//         let mut f = RwLock::new(f);
+//         let mut f = f.write()?;
+//         let json = serde_json::to_string(&map)?;
+//         write!(f, "{}", json)?;
+//         Ok(())
+//     }
+// }
 
 #[cfg(test)]
 mod tests {

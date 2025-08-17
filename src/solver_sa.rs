@@ -2,8 +2,8 @@ use rand::rngs::StdRng;
 
 use crate::prelude::*;
 
+use crate::draw;
 use crate::problem::*;
-use crate::render;
 use crate::solution::*;
 use crate::solver::*;
 use rand::Rng;
@@ -136,10 +136,10 @@ impl<'a> LocalState<'a> {
     fn report_progress(&self) -> Result<()> {
         // Save svg for reporting.
         let solution = self.to_solution();
-        render::render_solution(
+        draw::draw_solution(
             self.problem_id,
             &solution,
-            project_path(format!("render/wip/{}.svg", self.problem_id)),
+            project_path(format!("draw/wip/{}.svg", self.problem_id)),
         )
     }
 

@@ -222,7 +222,7 @@ userboard() {
   # api.icfpcontest.com/userboard
   local token=$(api_token)
   curl $curl_options --header "Authorization: Bearer ${token}" $site/userboard \
-    | tee ./solution/userboard.json \
+    | tee userboard.json \
     | jq .
 }
 

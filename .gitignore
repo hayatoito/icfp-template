@@ -3,7 +3,5 @@
 /log/
 /db/
 /draw/
-/solution/all/
-/solution/best-sa/
-/solution/sa-*
+/solution/
 *.sqlite

@@ -24,7 +24,7 @@ impl Userboard {
     }
 
     pub fn new() -> Result<Userboard> {
-        Ok(serde_json::from_str(&read_from("db/userboard.json")?)?)
+        Ok(serde_json::from_str(&read_from("userboard.json")?)?)
     }
 
     pub fn total_score(&self) -> Score {
@@ -48,7 +48,7 @@ fn create_table(conn: &Connection) -> Result<usize> {
     Ok(conn.execute(
         "CREATE TABLE IF NOT EXISTS best (
             id    INTEGER PRIMARY KEY,
-            score INTEGER NOT NULL
+            score REAL NOT NULL
         ) STRICT",
         (),
     )?)

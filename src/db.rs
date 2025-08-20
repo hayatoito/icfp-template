@@ -28,7 +28,7 @@ impl Userboard {
     }
 
     pub fn total_score(&self) -> Score {
-        self.success.problems.iter().flat_map(|a| a).sum()
+        self.success.problems.iter().flatten().sum()
     }
 
     #[allow(dead_code)]

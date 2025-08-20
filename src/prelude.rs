@@ -84,8 +84,8 @@ pub fn point_to_segment_distance_squared(p: Point, (p1, p2): (Point, Point)) -> 
     let a = a.clamp(0.0, 1.0);
     let closest_x = p1.x + a * dx;
     let closest_y = p1.y + a * dy;
-    let distance_squared = (closest_x - p.x).powi(2) + (closest_y - p.y).powi(2);
-    distance_squared
+    
+    (closest_x - p.x).powi(2) + (closest_y - p.y).powi(2)
 }
 
 pub fn inst_cnt(musicians: &[Instrument]) -> HashMap<Instrument, usize> {

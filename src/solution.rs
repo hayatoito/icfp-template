@@ -16,13 +16,13 @@ impl Solution {
     }
 
     pub fn submission(id: ProblemId) -> Result<Solution> {
-        let s = read_from(&format!("solution/submission/{}.json", id))?;
+        let s = read_from(format!("solution/submission/{}.json", id))?;
         let solution: Solution = serde_json::from_str(&s).unwrap();
         Ok(solution)
     }
 
     pub fn best(id: ProblemId) -> Result<Solution> {
-        let s = read_from(&format!("solution/best/{}.json", id))?;
+        let s = read_from(format!("solution/best/{}.json", id))?;
         let solution: Solution = serde_json::from_str(&s).unwrap();
         Ok(solution)
     }
@@ -61,7 +61,7 @@ impl Userboard {
     }
 
     pub fn total_score(&self) -> Score {
-        self.success.problems.iter().flat_map(|a| a).sum()
+        self.success.problems.iter().flatten().sum()
     }
 
     #[allow(dead_code)]

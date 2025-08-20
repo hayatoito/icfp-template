@@ -115,5 +115,5 @@ pub fn draw_solution_file(
 
 pub fn draw_solution(id: ProblemId, solution: &Solution, out_path: impl AsRef<Path>) -> Result<()> {
     let problem = Problem::new(id)?;
-    draw_svg(&problem, Some(&solution), out_path)
+    draw_svg(&problem, Some(solution), out_path)
 }

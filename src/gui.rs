@@ -58,7 +58,7 @@ fn build_ui(app: &Application, id: ProblemId, receiver: async_channel::Receiver<
         scale,
         move |_, cr, _width, _height| {
             cr.scale(scale.value(), scale.value());
-            draw_svg_on_context(&cr, &problem, solution.borrow().as_ref()).expect("draw?");
+            draw_svg_on_context(cr, &problem, solution.borrow().as_ref()).expect("draw?");
         }
     ));
 

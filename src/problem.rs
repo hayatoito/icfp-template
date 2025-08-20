@@ -176,7 +176,7 @@ impl Problem {
                     .iter()
                     .map(|a| {
                         let d2 = self.distance_to_stage_squared(a.point());
-                        a.tastes[inst as usize] / d2
+                        a.tastes[inst] / d2
                     })
                     .sum::<Score>();
                 if impact > 0.0 {

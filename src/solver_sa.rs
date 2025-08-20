@@ -45,7 +45,7 @@ fn norm_angle(mut angle: f64) -> f64 {
 
 // Score doesn't match judge's one because volumes or q are muliplied at last.
 pub fn score(problem: &Problem, problem_id: ProblemId, spec: Spec, solution: &Solution) -> Score {
-    let st = LocalState::new(problem, problem_id, spec, &solution);
+    let st = LocalState::new(problem, problem_id, spec, solution);
     st.score
 }
 
@@ -372,6 +372,7 @@ pub enum End {
     MaxDuration(std::time::Duration),
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn run_sa(
     name: &str,
     rng: &mut StdRng,
@@ -418,10 +419,10 @@ pub fn run_sa(
     loop {
         niter += 1;
 
-        if niter % 10 == 0 {
-            if let Some(sender) = &sender {
-                sender.send_blocking(st.to_solution())?;
-            }
+        if niter % 10 == 0
+            && let Some(sender) = &sender
+        {
+            sender.send_blocking(st.to_solution())?;
         }
 
         if niter % 1_000 == 0 {
